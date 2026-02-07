@@ -8,6 +8,7 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 import os
+import anthropic
 
 from config import config
 from rag_system import RAGSystem
@@ -66,17 +67,24 @@ async def query_documents(request: QueryRequest):
         session_id = request.session_id
         if not session_id:
             session_id = rag_system.session_manager.create_session()
-        
+
         # Process query using RAG system
         answer, sources = rag_system.query(request.query, session_id)
-        
+
         return QueryResponse(
             answer=answer,
             sources=sources,
             session_id=session_id
         )
+    except anthropic.APIError as e:
+        # Handle Anthropic API specific errors
+        raise HTTPException(status_code=503, detail=f"AI service error: {str(e)}")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        # Log error for debugging
+        import traceback
+        print(f"Query error: {str(e)}")
+        print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Query processing error: {str(e)}")
 
 @app.get("/api/courses", response_model=CourseStats)
 async def get_course_stats():
