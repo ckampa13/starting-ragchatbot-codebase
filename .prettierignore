@@ -1,0 +1,14 @@
+# Python / backend
+backend/
+docs/
+*.py
+*.toml
+*.lock
+uv.lock
+
+# Node
+node_modules/
+
+# Git / misc
+.git/
+*.md
