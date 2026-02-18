@@ -7,15 +7,59 @@ let currentSessionId = null;
 // DOM elements
 let chatMessages, chatInput, sendButton, totalCourses, courseTitles;
 
+// Theme Management
+
+// OS-level colour preference query — used both for default detection and live updates
+const osPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+function initTheme() {
+    // Respect a saved manual choice first; fall back to the OS preference
+    const saved = localStorage.getItem('theme');
+    const osTheme = osPrefersDark.matches ? 'dark' : 'light';
+    applyTheme(saved || osTheme);
+}
+
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    const btn = document.getElementById('themeToggle');
+    if (btn) {
+        const label = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+        btn.setAttribute('aria-label', label);
+        btn.setAttribute('title', label);
+    }
+    localStorage.setItem('theme', theme);
+}
+
+function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
+    // Sync button label with the theme the inline script already applied to <html>
+    initTheme();
+
     // Get DOM elements after page loads
     chatMessages = document.getElementById('chatMessages');
     chatInput = document.getElementById('chatInput');
     sendButton = document.getElementById('sendButton');
     totalCourses = document.getElementById('totalCourses');
     courseTitles = document.getElementById('courseTitles');
-    
+
+    // Wire up theme toggle button
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+    }
+
+    // Follow OS-level preference changes only when the user hasn't made a manual choice
+    osPrefersDark.addEventListener('change', (e) => {
+        if (!localStorage.getItem('theme')) {
+            applyTheme(e.matches ? 'dark' : 'light');
+        }
+    });
+
     setupEventListeners();
     createNewSession();
     loadCourseStats();

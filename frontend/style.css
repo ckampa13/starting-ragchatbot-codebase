@@ -5,23 +5,113 @@
     padding: 0;
 }
 
-/* CSS Variables */
+/* CSS Variables — Dark theme (default) */
 :root {
+    color-scheme: dark;
+
+    /* Brand */
     --primary-color: #2563eb;
     --primary-hover: #1d4ed8;
+    --focus-ring: rgba(37, 99, 235, 0.2);
+    --radius: 12px;
+
+    /* Backgrounds & surfaces */
     --background: #0f172a;
     --surface: #1e293b;
     --surface-hover: #334155;
+
+    /* Text */
     --text-primary: #f1f5f9;
     --text-secondary: #94a3b8;
+
+    /* Borders & shadows */
     --border-color: #334155;
-    --user-message: #2563eb;
-    --assistant-message: #374151;
     --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-    --radius: 12px;
-    --focus-ring: rgba(37, 99, 235, 0.2);
+
+    /* Message bubbles */
+    --user-message: #2563eb;
+    --assistant-message: #1e293b;
+
+    /* Welcome panel */
     --welcome-bg: #1e3a5f;
     --welcome-border: #2563eb;
+    --welcome-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+
+    /* Code blocks */
+    --code-bg: rgba(0, 0, 0, 0.25);
+    --code-border: rgba(255, 255, 255, 0.06);
+
+    /* Sources panel */
+    --sources-accent: #60a5fa;
+    --sources-accent-hover: #93c5fd;
+    --sources-bg: rgba(37, 99, 235, 0.06);
+    --sources-bg-hover: rgba(37, 99, 235, 0.12);
+    --sources-border: rgba(37, 99, 235, 0.2);
+    --source-item-bg: rgba(30, 41, 59, 0.55);
+    --source-item-hover-bg: rgba(30, 41, 59, 0.85);
+
+    /* Links */
+    --link-color: #93c5fd;
+    --link-color-hover: #bfdbfe;
+
+    /* Status messages */
+    --error-bg: rgba(239, 68, 68, 0.1);
+    --error-text: #f87171;
+    --error-border: rgba(239, 68, 68, 0.2);
+    --success-bg: rgba(34, 197, 94, 0.1);
+    --success-text: #4ade80;
+    --success-border: rgba(34, 197, 94, 0.2);
+}
+
+/* Light Theme Overrides — all values meet WCAG AA contrast on their backgrounds */
+[data-theme="light"] {
+    color-scheme: light;
+
+    /* Backgrounds & surfaces */
+    --background: #f8fafc;
+    --surface: #ffffff;
+    --surface-hover: #f1f5f9;
+
+    /* Text — #0f172a on #f8fafc ≈ 17:1; #475569 on #f8fafc ≈ 5.9:1 */
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+
+    /* Borders & shadows */
+    --border-color: #cbd5e1;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+
+    /* Message bubbles — assistant bubble slightly off-white so it reads on #f8fafc bg */
+    --assistant-message: #eef2f7;
+
+    /* Welcome panel */
+    --welcome-bg: #eff6ff;
+    --welcome-border: #93c5fd;
+    --welcome-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+
+    /* Code blocks */
+    --code-bg: rgba(15, 23, 42, 0.06);
+    --code-border: rgba(15, 23, 42, 0.08);
+
+    /* Sources panel — #1d4ed8 on #eff6ff ≈ 6.3:1 */
+    --sources-accent: #1d4ed8;
+    --sources-accent-hover: #1e40af;
+    --sources-bg: rgba(37, 99, 235, 0.05);
+    --sources-bg-hover: rgba(37, 99, 235, 0.1);
+    --sources-border: rgba(37, 99, 235, 0.18);
+    --source-item-bg: rgba(226, 232, 240, 0.6);
+    --source-item-hover-bg: rgba(203, 213, 225, 0.8);
+
+    /* Links — #2563eb on #f8fafc ≈ 5.9:1 */
+    --link-color: #2563eb;
+    --link-color-hover: #1d4ed8;
+
+    /* Status messages — accessible reds/greens on light backgrounds */
+    --error-bg: rgba(220, 38, 38, 0.07);
+    --error-text: #b91c1c;
+    --error-border: rgba(220, 38, 38, 0.22);
+    --success-bg: rgba(22, 163, 74, 0.07);
+    --success-text: #15803d;
+    --success-border: rgba(22, 163, 74, 0.22);
 }
 
 /* Base Styles */
@@ -34,6 +124,32 @@ body {
     overflow: hidden;
     margin: 0;
     padding: 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Apply transitions to theme-sensitive elements */
+.sidebar,
+.main-content,
+.chat-main,
+.chat-container,
+.chat-messages,
+.chat-input-container,
+#chatInput,
+.message-content,
+.stat-item,
+.stat-label,
+.stat-value,
+.suggested-item,
+.new-chat-btn,
+.source-item,
+.source-link,
+.source-text,
+.sources-collapsible,
+.sources-collapsible summary,
+.course-title-item,
+.no-courses,
+.error {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 /* Container - Full Screen */
@@ -201,7 +317,7 @@ header h1 {
 }
 
 .message.assistant .message-content {
-    background: var(--surface);
+    background: var(--assistant-message);
     color: var(--text-primary);
     border-bottom-left-radius: 4px;
 }
@@ -221,8 +337,8 @@ header h1 {
 /* Collapsible Sources */
 .sources-collapsible {
     margin-top: 0.75rem;
-    background: rgba(37, 99, 235, 0.05);
-    border: 1px solid rgba(37, 99, 235, 0.2);
+    background: var(--sources-bg);
+    border: 1px solid var(--sources-border);
     border-radius: 8px;
     overflow: hidden;
 }
@@ -233,20 +349,20 @@ header h1 {
     user-select: none;
     font-weight: 600;
     font-size: 0.8rem;
-    color: #60a5fa;
+    color: var(--sources-accent);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    background: rgba(37, 99, 235, 0.1);
+    background: var(--sources-bg-hover);
     transition: all 0.2s ease;
 }
 
 .sources-collapsible summary:hover {
-    background: rgba(37, 99, 235, 0.15);
-    color: #93c5fd;
+    background: var(--sources-bg-hover);
+    color: var(--sources-accent-hover);
 }
 
 .sources-collapsible[open] summary {
-    border-bottom: 1px solid rgba(37, 99, 235, 0.2);
+    border-bottom: 1px solid var(--sources-border);
     margin-bottom: 0;
 }
 
@@ -257,20 +373,20 @@ header h1 {
 .source-item {
     padding: 0.5rem 0.75rem;
     margin: 0.25rem 0;
-    background: rgba(30, 41, 59, 0.5);
+    background: var(--source-item-bg);
     border-radius: 6px;
-    border-left: 3px solid #60a5fa;
+    border-left: 3px solid var(--sources-accent);
     transition: all 0.2s ease;
 }
 
 .source-item:hover {
-    background: rgba(30, 41, 59, 0.8);
-    border-left-color: #93c5fd;
+    background: var(--source-item-hover-bg);
+    border-left-color: var(--sources-accent-hover);
     transform: translateX(2px);
 }
 
 .source-link {
-    color: #93c5fd;
+    color: var(--link-color);
     text-decoration: none;
     font-size: 0.85rem;
     font-weight: 500;
@@ -279,7 +395,7 @@ header h1 {
 }
 
 .source-link:hover {
-    color: #bfdbfe;
+    color: var(--link-color-hover);
 }
 
 .source-text {
@@ -319,7 +435,7 @@ header h1 {
 }
 
 .message-content code {
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: var(--code-bg);
     padding: 0.125rem 0.25rem;
     border-radius: 3px;
     font-family: 'Fira Code', 'Consolas', monospace;
@@ -327,7 +443,7 @@ header h1 {
 }
 
 .message-content pre {
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: var(--code-bg);
     padding: 0.75rem;
     border-radius: 4px;
     overflow-x: auto;
@@ -348,9 +464,9 @@ header h1 {
 
 /* Welcome message special styling */
 .message.welcome-message .message-content {
-    background: var(--surface);
-    border: 2px solid var(--border-color);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    background: var(--welcome-bg);
+    border: 2px solid var(--welcome-border);
+    box-shadow: var(--welcome-shadow);
     position: relative;
 }
 
@@ -469,21 +585,21 @@ header h1 {
 
 /* Error Message */
 .error-message {
-    background: rgba(239, 68, 68, 0.1);
-    color: #f87171;
+    background: var(--error-bg);
+    color: var(--error-text);
     padding: 0.75rem 1.25rem;
     border-radius: 8px;
-    border: 1px solid rgba(239, 68, 68, 0.2);
+    border: 1px solid var(--error-border);
     margin: 0.5rem 0;
 }
 
 /* Success Message */
 .success-message {
-    background: rgba(34, 197, 94, 0.1);
-    color: #4ade80;
+    background: var(--success-bg);
+    color: var(--success-text);
     padding: 0.75rem 1.25rem;
     border-radius: 8px;
-    border: 1px solid rgba(34, 197, 94, 0.2);
+    border: 1px solid var(--success-border);
     margin: 0.5rem 0;
 }
 
@@ -786,4 +902,63 @@ details[open] .suggested-header::before {
     .sidebar {
         width: 280px;
     }
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background: var(--surface);
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
+}
+
+.theme-toggle:hover {
+    background: var(--surface-hover);
+    color: var(--primary-color);
+    transform: scale(1.08);
+    box-shadow: var(--shadow);
+}
+
+.theme-toggle:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.theme-toggle .icon {
+    position: absolute;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Dark mode (default): sun visible, moon hidden */
+.theme-toggle .sun-icon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+}
+
+.theme-toggle .moon-icon {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.4);
+}
+
+/* Light mode: moon visible, sun hidden */
+[data-theme="light"] .theme-toggle .sun-icon {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.4);
+}
+
+[data-theme="light"] .theme-toggle .moon-icon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
 }
