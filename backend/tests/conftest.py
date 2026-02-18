@@ -132,3 +132,17 @@ def mock_malformed_response():
 def mock_multiple_tool_use_response():
     """Mock API response with multiple tool_use blocks."""
     return create_multiple_tool_use_response()
+
+
+@pytest.fixture
+def mock_rag_system():
+    """Mock RAGSystem for API endpoint testing."""
+    rag = Mock()
+    rag.query = Mock(return_value=("Test answer", []))
+    rag.get_course_analytics = Mock(return_value={
+        "total_courses": 2,
+        "course_titles": ["Introduction to Python", "Advanced ML"],
+    })
+    rag.session_manager = Mock()
+    rag.session_manager.create_session = Mock(return_value="auto-session-id")
+    return rag
